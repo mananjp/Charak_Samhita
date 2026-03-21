@@ -1,6 +1,6 @@
 services:
   charaka-vaidya:
-    build: .
+    image: mananjp/charaka-vaidya:latest
     container_name: charaka-vaidya
     env_file:
       - .env
