@@ -40,7 +40,7 @@ def get_current_season():
     else:                   return "winter"
 
 @router.get("")
-async def daily_routine(season: str = Query(None)):
+def daily_routine(season: str = Query(None)):
     s = (season or get_current_season()).lower()
     routine = ROUTINES.get(s, ROUTINES["winter"])
     return {"season_key": s, **routine,

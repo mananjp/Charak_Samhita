@@ -17,7 +17,7 @@ def call_chat_api(query: str, history: list, simple_mode: bool = False) -> dict:
         resp = requests.post(
             f"{API_BASE}/chat",
             json={"query": query, "history": history, "simple_mode": simple_mode},
-            timeout=60,
+            timeout=300,
         )
         if resp.status_code == 200:
             return resp.json()

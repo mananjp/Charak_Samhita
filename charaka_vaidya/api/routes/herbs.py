@@ -14,7 +14,7 @@ def load_herbs_db():
     return {}
 
 @router.get("/{name}")
-async def get_herb(name: str):
+def get_herb(name: str):
     herbs_db = load_herbs_db()
     herb_key = name.lower().strip()
     if herb_key in herbs_db:
@@ -24,6 +24,6 @@ async def get_herb(name: str):
     return {"name": name, "generated": True, "profile": response, "sources": sources}
 
 @router.get("")
-async def list_herbs():
+def list_herbs():
     herbs_db = load_herbs_db()
     return {"herbs": list(herbs_db.keys()), "count": len(herbs_db)}

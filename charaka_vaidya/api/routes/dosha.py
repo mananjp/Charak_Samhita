@@ -6,7 +6,7 @@ from core.constants import DOSHAS
 router = APIRouter()
 
 @router.post("", response_model=DoshaAssessResponse)
-async def assess_dosha(req: DoshaAssessRequest):
+def assess_dosha(req: DoshaAssessRequest):
     scores = {"vata": 0, "pitta": 0, "kapha": 0}
     for ans in req.answers:
         d = ans.answer.lower()

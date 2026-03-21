@@ -13,7 +13,7 @@ router = APIRouter()
 logger = get_logger(__name__)
 
 @router.post("", response_model=ChatResponse)
-async def chat_endpoint(req: ChatRequest):
+def chat_endpoint(req: ChatRequest):
     try:
         intent = classify_intent(req.query)
         is_emergency, emergency_msg = check_safety(req.query, intent)

@@ -8,7 +8,7 @@ router = APIRouter()
 logger = get_logger(__name__)
 
 @router.post("")
-async def search_samhita(req: SamhitaSearchRequest):
+def search_samhita(req: SamhitaSearchRequest):
     try:
         chunks = retrieve(req.query, top_k=req.top_k, filter_sthana=req.sthana)
         return {"query": req.query, "results": chunks, "count": len(chunks)}

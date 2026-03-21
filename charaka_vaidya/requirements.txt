@@ -13,6 +13,7 @@ groq>=0.4.2
 langchain>=0.1.14
 langchain-community>=0.0.31
 langchain-huggingface>=0.1.0
+langchain-chroma>=0.1.0
 sentence-transformers>=2.6.1    # free local embeddings, no API key needed
 chromadb>=0.4.24                # free local vector store, no server needed
 
