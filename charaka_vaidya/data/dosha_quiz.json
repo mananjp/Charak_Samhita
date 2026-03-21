@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "question": "My body frame is:",
+    "options": {
+      "vata": "Thin, light, difficult to gain weight",
+      "pitta": "Medium, muscular, moderate build",
+      "kapha": "Large, solid, tendency to gain weight"
+    }
+  },
+  {
+    "id": 2,
+    "question": "My skin is typically:",
+    "options": {
+      "vata": "Dry, rough, or chapped",
+      "pitta": "Warm, reddish, prone to rashes",
+      "kapha": "Smooth, oily, thick"
+    }
+  }
+]

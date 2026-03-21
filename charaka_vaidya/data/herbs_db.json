@@ -1,0 +1,47 @@
+{
+  "ashwagandha": {
+    "name": "Ashwagandha",
+    "sanskrit": "Ashwagandha",
+    "hindi": "Asgandh",
+    "english": "Indian Ginseng / Winter Cherry",
+    "rasa": "Tikta (Bitter), Kashaya (Astringent)",
+    "guna": "Laghu (Light), Snigdha (Unctuous)",
+    "virya": "Ushna (Warming)",
+    "vipaka": "Madhura (Sweet)",
+    "reference": "Charaka Samhita, Sutrasthana Ch. 4 (Rasayana section)",
+    "traditional_uses": "Rasayana (rejuvenation), Vajikarana (vitality), balances Vata and Kapha doshas. Used for weakness, fatigue, nervous system disorders, and reproductive health.",
+    "modern_research": "Classified as an adaptogen; reduces cortisol levels by 27-30% (clinical studies). Shows anxiolytic properties comparable to lorazepam in animal studies. Anti-inflammatory via withanolides. Improves VO2 max and endurance.",
+    "how_to_use": "300-600mg standardized extract daily, OR 1 tsp root powder in warm milk at bedtime. Can be taken with ghee and honey.",
+    "contraindications": "Pregnancy, autoimmune conditions (MS, lupus, rheumatoid arthritis), thyroid disorders (without supervision), sedative medications."
+  },
+  "triphala": {
+    "name": "Triphala",
+    "sanskrit": "Triphala",
+    "hindi": "Triphala",
+    "english": "Three Fruits Formula",
+    "rasa": "All six tastes except Lavana (salt)",
+    "guna": "Laghu (Light), Ruksha (Dry)",
+    "virya": "Ushna (Slightly warming)",
+    "vipaka": "Madhura (Sweet)",
+    "reference": "Charaka Samhita, Kalpasthana Ch. 1",
+    "traditional_uses": "Tridosha balancing formula (Amalaki-Pitta, Bibhitaki-Kapha, Haritaki-Vata). Digestive tonic, mild laxative, eye health, diabetes management, Rasayana.",
+    "modern_research": "Prebiotic properties supporting gut microbiome. Strong antioxidant activity (ORAC score). Anti-diabetic properties via alpha-glucosidase inhibition. Antimicrobial against H. pylori.",
+    "how_to_use": "1 tsp powder in warm water before bed, OR 500mg capsule twice daily. For eye wash: dilute in boiled cooled water.",
+    "contraindications": "Pregnancy, diarrhea or loose stools, before surgery (blood thinning effect), iron deficiency (take separately from iron supplements)."
+  },
+  "brahmi": {
+    "name": "Brahmi",
+    "sanskrit": "Brahmi / Mandukparni",
+    "hindi": "Brahmi",
+    "english": "Bacopa monnieri / Gotu Kola",
+    "rasa": "Tikta (Bitter), Kashaya (Astringent)",
+    "guna": "Laghu (Light), Sara (Mobile)",
+    "virya": "Sheeta (Cooling)",
+    "vipaka": "Madhura (Sweet)",
+    "reference": "Charaka Samhita, Kalpasthana — Medhya Rasayana group",
+    "traditional_uses": "Medhya Rasayana (nootropic). Enhances memory, intelligence, speech. Balances all doshas esp. Vata and Pitta. Treats epilepsy, anxiety, skin diseases.",
+    "modern_research": "Bacosides A and B promote neuronal synthesis. Meta-analyses show significant improvement in attention and memory consolidation. Adaptogen properties. Reduces anxiety via GABA modulation.",
+    "how_to_use": "300-450mg standardized extract daily with meals. OR fresh juice 5-10ml. Brahmi ghee (medicated) for topical application on scalp.",
+    "contraindications": "May slow heart rate — avoid with bradycardia medications. Consult before use in hypothyroidism. High doses may cause nausea."
+  }
+}
