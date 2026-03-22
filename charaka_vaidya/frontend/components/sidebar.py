@@ -9,25 +9,6 @@ def render_sidebar():
         st.markdown("*Ancient Wisdom · Modern Clarity*")
         st.markdown("---")
 
-        # ── Groq API Key ──────────────────────────────────────────────────────
-        st.markdown("### 🔑 Groq API Key")
-        saved_key = st.session_state.get("groq_api_key", config.GROQ_API_KEY or "")
-        api_key = st.text_input(
-            label="Enter your Groq key",
-            value=saved_key,
-            type="password",
-            placeholder="gsk_...",
-            help="Get a free key at console.groq.com",
-        )
-        if api_key:
-            st.session_state["groq_api_key"] = api_key
-            os.environ["GROQ_API_KEY"] = api_key   # live-patch for pipeline
-            if api_key.startswith("gsk_"):
-                st.success("✅ Groq key active")
-            else:
-                st.warning("⚠️ Key should start with gsk_")
-        else:
-            st.info("🔗 [Get free Groq key](https://console.groq.com)")
 
         # ── Model selector ────────────────────────────────────────────────────
         GROQ_MODELS = {
