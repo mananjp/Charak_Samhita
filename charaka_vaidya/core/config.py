@@ -1,7 +1,9 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+_base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_env_path = os.path.join(_base_dir, ".env")
+load_dotenv(_env_path)
 
 class Config:
     # ── Groq LLM (only provider) ──────────────────────────────────────────────
