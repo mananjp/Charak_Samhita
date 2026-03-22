@@ -121,4 +121,4 @@ Response Formatter ──► Streamlit UI
 
 ---
 
-⚠️ *Charaka Vaidya is an educational tool. Always consult a qualified Ayurvedic practitioner or medical doctor for health decisions.*
+⚠️ *Charaka Vaidya is intended for educational purposes only. For any medical advice or health-related decisions, please consult a qualified Ayurvedic practitioner or a licensed healthcare professional.*
