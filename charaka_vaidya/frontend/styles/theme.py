@@ -2,10 +2,39 @@
 CHARAKA_CSS = """
 <style>
     /* ── Base ── */
-    .stApp { background-color: #FDF5E6; font-family: "Georgia", serif; color: #3B2A1A !important; }
+    :root {
+        --charaka-bg: #FDF5E6;
+        --charaka-text: #3B2A1A;
+        --charaka-heading: #8B4513;
+    }
+
+    html, body, [data-testid="stAppViewContainer"], .stApp {
+        background-color: var(--charaka-bg) !important;
+        color: var(--charaka-text) !important;
+        font-family: "Georgia", serif;
+    }
+
     .main .block-container { max-width: 900px; padding: 2rem 2rem 5rem; }
-    .main * { color: #3B2A1A; }
+    .main * { color: var(--charaka-text); }
     .main p, .main span, .main div { color: inherit; }
+
+    /* Force readable text color for common Streamlit widgets */
+    [data-testid="stMarkdownContainer"],
+    [data-testid="stText"],
+    [data-testid="stCaptionContainer"],
+    [data-testid="stExpander"],
+    [data-testid="stMetricValue"],
+    [data-testid="stMetricLabel"],
+    .stChatMessage,
+    .stAlert,
+    .stSelectbox label,
+    .stTextInput label,
+    .stTextArea label,
+    .stRadio label,
+    .stCheckbox label,
+    .stToggle label {
+        color: var(--charaka-text) !important;
+    }
 
     /* ── Sidebar ── */
     section[data-testid="stSidebar"] {
@@ -43,7 +72,7 @@ CHARAKA_CSS = """
     }
 
     /* ── Headings ── */
-    h1, h2, h3 { color: #8B4513 !important; font-family: "Georgia", serif; }
+    h1, h2, h3 { color: var(--charaka-heading) !important; font-family: "Georgia", serif; }
     h1 { border-bottom: 2px solid #DAA520; padding-bottom: 8px; }
 
     /* ── Buttons ── */

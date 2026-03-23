@@ -1,7 +1,7 @@
 from groq import Groq
-from core.config import config
-from core.prompts import SYSTEM_PROMPT
-from utils.logger import get_logger
+from charaka_vaidya.core.config import config
+from charaka_vaidya.core.prompts import SYSTEM_PROMPT
+from charaka_vaidya.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

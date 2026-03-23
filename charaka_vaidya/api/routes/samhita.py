@@ -1,8 +1,8 @@
 
 from fastapi import APIRouter, HTTPException
-from api.schemas import SamhitaSearchRequest
-from rag.retriever import retrieve
-from utils.logger import get_logger
+from charaka_vaidya.api.schemas import SamhitaSearchRequest
+from charaka_vaidya.rag.retriever import retrieve
+from charaka_vaidya.utils.logger import get_logger
 
 router = APIRouter()
 logger = get_logger(__name__)

@@ -1,8 +1,7 @@
-
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from core.config import config
-from utils.logger import get_logger
+from charaka_vaidya.core.config import config
+from charaka_vaidya.utils.logger import get_logger
 import re, json
 
 logger = get_logger(__name__)
