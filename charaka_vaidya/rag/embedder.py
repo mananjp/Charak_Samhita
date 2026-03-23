@@ -2,9 +2,15 @@
 Embeddings  : HuggingFace sentence-transformers  (free, local, no API key)
 Vector Store: ChromaDB                           (free, local, no server needed)
 """
-from langchain_huggingface import HuggingFaceEmbeddings 
+try:
+    from langchain_huggingface import HuggingFaceEmbeddings
+except ImportError:
+    from langchain_community.embeddings import HuggingFaceEmbeddings
 import chromadb
-from langchain_chroma import Chroma
+try:
+    from langchain_chroma import Chroma
+except ImportError:
+    from langchain_community.vectorstores import Chroma
 from core.config import config
 from utils.logger import get_logger
 

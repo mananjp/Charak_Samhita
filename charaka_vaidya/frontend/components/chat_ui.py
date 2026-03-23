@@ -50,7 +50,9 @@ def _direct_pipeline(query: str, history: list) -> dict:
         context, sources = build_context(query, intent)
         raw = generate_response(query, context, history, intent)
         fmt = format_response(raw, intent, sources)
-        return {**fmt, "is_emergency": False}
+        return {"answer": fmt["text"], "intent": fmt["intent"],
+                "sources": fmt["sources"], "has_disclaimer": fmt["has_disclaimer"],
+                "is_emergency": False}
 
     except RuntimeError as e:
         if "Vector store not found" in str(e):

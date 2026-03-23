@@ -1,0 +1,67 @@
+{
+  "page_title": "SDG 3 — अच्छा स्वास्थ्य और खुशहाली",
+  "page_subtitle": "UN सतत विकास लक्ष्य 3: सभी उम्र के लोगों के लिए स्वस्थ जीवन सुनिश्चित करें।",
+  "progress_note": "मातृ मृत्यु दर 2023 में 197 प्रति 1,00,000 रह गई — 2030 तक लक्ष्य है <70।",
+  "section_cards": "स्वास्थ्य जानकारी कार्ड",
+  "voice_hint": "💡 किसी भी कार्ड को खोलने के लिए बोलें — जैसे 'मातृ स्वास्थ्य के बारे में बताएं'।",
+  "disclaimer_card": "यह जानकारी केवल शैक्षिक है। व्यक्तिगत चिकित्सा सलाह के लिए योग्य स्वास्थ्य पेशेवर से परामर्श करें।",
+  "learn_more": "अधिक जानें →",
+  "cards": [
+    {
+      "key": "maternal",
+      "emoji": "🤱",
+      "title": "मातृ स्वास्थ्य (SDG 3.1)",
+      "body": "नियमित प्रसवपूर्व देखभाल, कुशल प्रसव और प्रसवोत्तर जांच जीवन बचाती है। गर्भावस्था में जल्दी देखभाल लें।",
+      "who_link": "https://www.who.int/health-topics/maternal-health"
+    },
+    {
+      "key": "child",
+      "emoji": "👶",
+      "title": "बाल स्वास्थ्य (SDG 3.2)",
+      "body": "6 महीने तक केवल स्तनपान, समय पर टीकाकरण और दस्त के लिए ORS अधिकांश मृत्युओं को रोकता है।",
+      "who_link": "https://www.who.int/health-topics/child-health"
+    },
+    {
+      "key": "infectious",
+      "emoji": "🦠",
+      "title": "संक्रामक रोग (SDG 3.3)",
+      "body": "HIV, TB, मलेरिया और हेपेटाइटिस बड़े खतरे हैं। अपनी स्थिति जानें, सुरक्षा अपनाएं, इलाज पूरा करें।",
+      "who_link": "https://www.who.int/health-topics/communicable-diseases"
+    },
+    {
+      "key": "ncd",
+      "emoji": "❤️",
+      "title": "गैर-संचारी रोग (SDG 3.4)",
+      "body": "हृदय रोग, मधुमेह और कैंसर 74% वैश्विक मृत्यु का कारण हैं। नियमित जांच, संतुलित आहार और व्यायाम जरूरी है।",
+      "who_link": "https://www.who.int/health-topics/noncommunicable-diseases"
+    },
+    {
+      "key": "mental_health",
+      "emoji": "🧠",
+      "title": "मानसिक स्वास्थ्य (SDG 3.4)",
+      "body": "दुनिया में 8 में से 1 व्यक्ति मानसिक विकार से पीड़ित है। किसी विश्वसनीय से बात करें। आप अकेले नहीं हैं।",
+      "who_link": "https://www.who.int/health-topics/mental-health"
+    },
+    {
+      "key": "substance",
+      "emoji": "🚭",
+      "title": "नशा मुक्ति (SDG 3.5)",
+      "body": "तंबाकू, शराब और नशीले पदार्थ लाखों मौतों का कारण हैं। परामर्श और सहायता सेवाएं छोड़ने में मदद कर सकती हैं।",
+      "who_link": "https://www.who.int/health-topics/alcohol"
+    },
+    {
+      "key": "uhc",
+      "emoji": "🏥",
+      "title": "सार्वभौमिक स्वास्थ्य कवरेज (SDG 3.8)",
+      "body": "हर किसी को बिना आर्थिक कठिनाई के गुणवत्तापूर्ण स्वास्थ्य सेवाओं का अधिकार है। मुफ्त/सब्सिडी वाली देखभाल के बारे में जानें।",
+      "who_link": "https://www.who.int/health-topics/universal-health-coverage"
+    },
+    {
+      "key": "vaccines",
+      "emoji": "💉",
+      "title": "टीके और दवाएं (SDG 3.b)",
+      "body": "टीके सालाना 35-50 लाख मौतें रोकते हैं। राष्ट्रीय टीकाकरण अनुसूची का पालन करें और रिकॉर्ड रखें।",
+      "who_link": "https://www.who.int/health-topics/vaccines-and-immunization"
+    }
+  ]
+}

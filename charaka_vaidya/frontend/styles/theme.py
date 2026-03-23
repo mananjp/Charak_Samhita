@@ -98,3 +98,8 @@ LOGO_HTML = """
 </div>
 <hr style="border-color:#DAA52060;">
 """
+
+def inject_theme():
+    """Convenience wrapper: inject CHARAKA_CSS into any page."""
+    import streamlit as st
+    st.markdown(CHARAKA_CSS, unsafe_allow_html=True)

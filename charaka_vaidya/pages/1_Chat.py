@@ -7,6 +7,7 @@ from frontend.styles.theme import CHARAKA_CSS, LOGO_HTML
 from frontend.components.chat_ui import render_message, call_chat_api, init_chat_state
 from frontend.components.sidebar import render_sidebar
 from frontend.components.source_panel import render_sources
+from core.i18n import get_lang, SUPPORTED_LANGUAGES
 
 st.set_page_config(page_title="Charaka Vaidya · Chat", page_icon="🌿", layout="wide")
 st.markdown(CHARAKA_CSS, unsafe_allow_html=True)
@@ -66,6 +67,33 @@ with st.form("chat_form", clear_on_submit=True):
     )
     submitted = st.form_submit_button("🙏 Ask Vaidya", use_container_width=True)
 
+# ── Translation helper ───────────────────────────────────────────────────────
+def translate_answer(text: str, target_lang: str) -> str:
+    """Translate the answer to the target language using Groq LLM."""
+    if target_lang == "en":
+        return text
+    lang_name = SUPPORTED_LANGUAGES.get(target_lang, target_lang)
+    try:
+        from groq import Groq
+        from core.config import config
+        api_key = st.session_state.get("groq_api_key") or config.GROQ_API_KEY
+        if not api_key:
+            return text
+        client = Groq(api_key=api_key)
+        resp = client.chat.completions.create(
+            model=st.session_state.get("llm_model", config.LLM_MODEL),
+            messages=[
+                {"role": "system", "content": f"You are a translator. Translate the following text to {lang_name}. Keep all markdown formatting, emojis, and structure intact. Only translate the text, do not add anything else."},
+                {"role": "user", "content": text},
+            ],
+            temperature=0.3,
+            max_tokens=4096,
+        )
+        return resp.choices[0].message.content.strip()
+    except Exception as e:
+        st.warning(f"Translation failed: {e}")
+        return text
+
 if submitted and user_input.strip():
     st.session_state.messages.append({"role": "user", "content": user_input.strip()})
     render_message("user", user_input.strip())
@@ -77,6 +105,12 @@ if submitted and user_input.strip():
     answer   = response.get("answer", "")
     sources  = response.get("sources", [])
     is_emerg = response.get("is_emergency", False)
+
+    # Translate if user selected a non-English language
+    current_lang = get_lang()
+    if current_lang != "en" and answer:
+        with st.spinner(f"🌐 Translating to {SUPPORTED_LANGUAGES.get(current_lang, current_lang)}..."):
+            answer = translate_answer(answer, current_lang)
 
     if is_emerg:
         st.markdown(f'<div class="emergency-banner">{answer}</div>', unsafe_allow_html=True)

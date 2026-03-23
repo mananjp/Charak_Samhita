@@ -31,7 +31,7 @@ Charaka Samhita with **modern biomedical understanding**, using Retrieval-Augmen
 ### 🚀 How to Use
 """)
 
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col4, col5, col6 = st.columns(6)
 with col1:
     st.markdown("""
 <div class="dosha-card">
@@ -71,6 +71,26 @@ with col4:
 </div>""", unsafe_allow_html=True)
     if st.button("View Routine →", key="home_routine", use_container_width=True):
         st.switch_page("pages/4_Daily_Routine.py")
+
+with col5:
+    st.markdown("""
+<div class="dosha-card">
+    <h2>🌍</h2>
+    <h4>Health & SDG 3</h4>
+    <p>Explore UN SDG 3 health topics with curated information cards.</p>
+</div>""", unsafe_allow_html=True)
+    if st.button("Explore SDG 3 →", key="home_sdg3", use_container_width=True):
+        st.switch_page("pages/5_SDG3_Health.py")
+
+with col6:
+    st.markdown("""
+<div class="dosha-card">
+    <h2>💚</h2>
+    <h4>Well-Being</h4>
+    <p>Track your daily mood, symptoms, and health check-ins.</p>
+</div>""", unsafe_allow_html=True)
+    if st.button("Track Well-Being →", key="home_wellbeing", use_container_width=True):
+        st.switch_page("pages/6_Wellbeing.py")
 
 st.markdown("""
 ---

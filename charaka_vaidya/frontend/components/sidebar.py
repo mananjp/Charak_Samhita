@@ -2,12 +2,29 @@ import streamlit as st
 import os
 from core.constants import DOSHAS, AYURVEDIC_TERMS, STHANAS
 from core.config import config
+from core.i18n import SUPPORTED_LANGUAGES, t
 
 def render_sidebar():
     with st.sidebar:
         st.markdown("## 🌿 Charaka Vaidya")
         st.markdown("*Ancient Wisdom · Modern Clarity*")
         st.markdown("---")
+
+        # ── Language selector ─────────────────────────────────────────────────
+        langs = list(SUPPORTED_LANGUAGES.keys())
+        labels = list(SUPPORTED_LANGUAGES.values())
+        current = st.session_state.get("lang", "en")
+        idx = langs.index(current) if current in langs else 0
+        chosen = st.selectbox(
+            t("language_label"),
+            options=langs,
+            format_func=lambda k: SUPPORTED_LANGUAGES[k],
+            index=idx,
+            key="lang_select",
+        )
+        if chosen != st.session_state.get("lang", "en"):
+            st.session_state["lang"] = chosen
+            st.rerun()
 
 
         # ── Model selector ────────────────────────────────────────────────────
@@ -36,6 +53,8 @@ def render_sidebar():
         st.page_link("pages/2_Herb_Glossary.py", label="🌱 Herb Glossary")
         st.page_link("pages/3_Dosha_Quiz.py",    label="🧘 Dosha Quiz")
         st.page_link("pages/4_Daily_Routine.py", label="☀️ Daily Routine")
+        st.page_link("pages/5_SDG3_Health.py",   label="🌍 Health & SDG 3")
+        st.page_link("pages/6_Wellbeing.py",      label="💚 Well-Being Tracker")
 
         st.markdown("---")
 

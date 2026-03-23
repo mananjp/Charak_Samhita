@@ -60,3 +60,18 @@ THEME = {
     "surface":     "#FAF0DC",   # Light cream
     "error":       "#C0392B",
 }
+
+UHC_DATA = {
+    "IN": {
+        "country":     "India",
+        "flag":        "🇮🇳",
+        "emergency":   "112 / 108 (Ambulance)",
+        "health_link": "https://www.nhp.gov.in",
+    },
+    "DEFAULT": {
+        "country":     "International",
+        "flag":        "🌐",
+        "emergency":   "Local emergency number",
+        "health_link": "https://www.who.int",
+    },
+}

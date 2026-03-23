@@ -1,0 +1,67 @@
+{
+  "page_title": "SDG 3 — Good Health & Well-Being",
+  "page_subtitle": "UN Sustainable Development Goal 3: Ensure healthy lives and promote well-being for all at all ages.",
+  "progress_note": "Maternal mortality fell to 197 per 100,000 (2023) — target is <70 by 2030.",
+  "section_cards": "Health Information Cards",
+  "voice_hint": "💡 Say \"Tell me about maternal health\" to surface any card by voice.",
+  "disclaimer_card": "This information is educational. Consult a qualified health professional for personal medical advice.",
+  "learn_more": "Learn more →",
+  "cards": [
+    {
+      "key": "maternal",
+      "emoji": "🤱",
+      "title": "Maternal Health (SDG 3.1)",
+      "body": "Regular antenatal care, skilled birth attendance, and postnatal check-ups save lives. Seek care early in pregnancy.",
+      "who_link": "https://www.who.int/health-topics/maternal-health"
+    },
+    {
+      "key": "child",
+      "emoji": "👶",
+      "title": "Child Health (SDG 3.2)",
+      "body": "Exclusive breastfeeding for 6 months, timely vaccinations, and ORS for diarrhoea prevent most under-5 deaths.",
+      "who_link": "https://www.who.int/health-topics/child-health"
+    },
+    {
+      "key": "infectious",
+      "emoji": "🦠",
+      "title": "Infectious Diseases (SDG 3.3)",
+      "body": "HIV, TB, malaria, and hepatitis remain major threats. Know your status, use protection, complete treatment courses.",
+      "who_link": "https://www.who.int/health-topics/communicable-diseases"
+    },
+    {
+      "key": "ncd",
+      "emoji": "❤️",
+      "title": "Non-Communicable Diseases (SDG 3.4)",
+      "body": "Heart disease, diabetes, and cancer cause 74% of global deaths. Regular screening, a balanced diet, and daily movement matter.",
+      "who_link": "https://www.who.int/health-topics/noncommunicable-diseases"
+    },
+    {
+      "key": "mental_health",
+      "emoji": "🧠",
+      "title": "Mental Health (SDG 3.4)",
+      "body": "1 in 8 people worldwide live with a mental disorder. Talk to someone you trust. Help is available — you are not alone.",
+      "who_link": "https://www.who.int/health-topics/mental-health"
+    },
+    {
+      "key": "substance",
+      "emoji": "🚭",
+      "title": "Substance Use (SDG 3.5)",
+      "body": "Tobacco, alcohol, and drugs cause millions of preventable deaths. Counselling and support services can help you quit.",
+      "who_link": "https://www.who.int/health-topics/alcohol"
+    },
+    {
+      "key": "uhc",
+      "emoji": "🏥",
+      "title": "Universal Health Coverage (SDG 3.8)",
+      "body": "Everyone deserves quality health services without financial hardship. Know your rights to free or subsidised care.",
+      "who_link": "https://www.who.int/health-topics/universal-health-coverage"
+    },
+    {
+      "key": "vaccines",
+      "emoji": "💉",
+      "title": "Vaccines & Medicines (SDG 3.b)",
+      "body": "Vaccines prevent 3.5–5M deaths yearly. Follow your national immunisation schedule and keep a vaccination record.",
+      "who_link": "https://www.who.int/health-topics/vaccines-and-immunization"
+    }
+  ]
+}

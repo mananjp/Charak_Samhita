@@ -2,7 +2,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from core.config import config
-from api.routes import chat, herbs, dosha, routine, samhita
+from api.routes import chat, herbs, dosha, routine, samhita, transcribe
 
 app = FastAPI(
     title=config.APP_NAME,
@@ -25,6 +25,7 @@ app.include_router(herbs.router,   prefix="/herb",         tags=["Herbs"])
 app.include_router(dosha.router,   prefix="/assess-dosha", tags=["Dosha"])
 app.include_router(routine.router, prefix="/daily-routine",tags=["Routine"])
 app.include_router(samhita.router, prefix="/search-samhita",tags=["Samhita"])
+app.include_router(transcribe.router, prefix="/transcribe", tags=["Transcribe"])
 
 @app.get("/health")
 def health_check():

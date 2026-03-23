@@ -1,0 +1,67 @@
+{
+  "page_title": "SDG 3 — સારું સ્વાસ્થ્ય અને સુખ-સમૃદ્ધિ",
+  "page_subtitle": "UN ટકાઉ વિકાસ ધ્યેય 3: તમામ ઉંમરના લોકો માટે સ્વસ્થ જીવન સુનિશ્ચિત કરો.",
+  "progress_note": "2023 માં માતૃ મૃત્યુ દર 197 પ્રતિ 1,00,000 — 2030 સુધીનો લક્ષ્ય <70 છે.",
+  "section_cards": "સ્વાસ્થ્ય માહિતી કાર્ડ",
+  "voice_hint": "💡 કોઈ પણ કાર્ડ ખોલવા માટે બોલો — જેમ કે 'માતૃ સ્વાસ્થ્ય વિશે જણાવો'.",
+  "disclaimer_card": "આ માહિતી ફક્ત શૈક્ષणिक छे. व्यक्तिगत तबीबी सलाह माटे लायक स्वास्थ्य व्यावसायिकनी सलाह लो.",
+  "learn_more": "વધુ જાણો →",
+  "cards": [
+    {
+      "key": "maternal",
+      "emoji": "🤱",
+      "title": "માતૃ સ્વાસ્થ્ય (SDG 3.1)",
+      "body": "નિયમિત પ્રસૂતિ પૂર્વ સંભાળ, કુશળ પ્રસૂતિ અને પ્રસૂતિ પછીની તપાસ જીવ બચાવે છે. ગર્ભાવસ્થામાં વહેલી સંભાળ લો.",
+      "who_link": "https://www.who.int/health-topics/maternal-health"
+    },
+    {
+      "key": "child",
+      "emoji": "👶",
+      "title": "બાળ સ્વાસ્થ્ય (SDG 3.2)",
+      "body": "6 મહિના સ્તનપાન, સમયસર રસીકरण और दस्त माटे ORS मोटाभागना मृत्युने अटकावे छे.",
+      "who_link": "https://www.who.int/health-topics/child-health"
+    },
+    {
+      "key": "infectious",
+      "emoji": "🦠",
+      "title": "ચેપી રોગ (SDG 3.3)",
+      "body": "HIV, TB, मलेरिया अने हिपेटाइटिस मोटा खतरा छे. तमारी स्थिति जाणो, रक्षण अपनावो, इलाज पूरो करो.",
+      "who_link": "https://www.who.int/health-topics/communicable-diseases"
+    },
+    {
+      "key": "ncd",
+      "emoji": "❤️",
+      "title": "બિન-ચેપી રોગ (SDG 3.4)",
+      "body": "હૃदय रोग, मधुमेह अने कैन्सर 74% वैश्विक मृत्युनु कारण छे. नियमित तपास, संतुलित आहार अने व्यायाम जरूरी छे.",
+      "who_link": "https://www.who.int/health-topics/noncommunicable-diseases"
+    },
+    {
+      "key": "mental_health",
+      "emoji": "🧠",
+      "title": "માનसिक स्वास्थ्य (SDG 3.4)",
+      "body": "दुनियामां 8 मांथी 1 व्यक्ति मानसिक विकारथी पीडाय छे. कोई विश्वासु व्यक्ति साथे वात करो. तमे एकला नथी.",
+      "who_link": "https://www.who.int/health-topics/mental-health"
+    },
+    {
+      "key": "substance",
+      "emoji": "🚭",
+      "title": "व्यसन मुक्ति (SDG 3.5)",
+      "body": "तंबाकू, दारू अने नशीली वस्तुओ लाखो मृत्युनु कारण छे. परामर्श सेवाओ छोडवामां मदद करी शके छे.",
+      "who_link": "https://www.who.int/health-topics/alcohol"
+    },
+    {
+      "key": "uhc",
+      "emoji": "🏥",
+      "title": "युनिवर्सल हेल्थ कवरेज (SDG 3.8)",
+      "body": "दरेकने आर्थिक तकलीफ वगर गुणवत्तापूर्ण स्वास्थ्य सेवाओनो अधिकार छे. मफत/सब्सिडी संभाळ जाणो.",
+      "who_link": "https://www.who.int/health-topics/universal-health-coverage"
+    },
+    {
+      "key": "vaccines",
+      "emoji": "💉",
+      "title": "રssiCor अने दवाओ (SDG 3.b)",
+      "body": "रसीकरण दर वर्षे 35-50 लाख मृत्यु अटकावे छे. राष्ट्रीय रसीकरण कार्यक्रम पाळो अने रेकॉर्ड राखो.",
+      "who_link": "https://www.who.int/health-topics/vaccines-and-immunization"
+    }
+  ]
+}
