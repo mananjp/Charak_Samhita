@@ -1,7 +1,7 @@
 
 from fastapi import APIRouter
-from api.schemas import DoshaAssessRequest, DoshaAssessResponse
-from core.constants import DOSHAS
+from charaka_vaidya.api.schemas import DoshaAssessRequest, DoshaAssessResponse
+from charaka_vaidya.core.constants import DOSHAS
 
 router = APIRouter()
 

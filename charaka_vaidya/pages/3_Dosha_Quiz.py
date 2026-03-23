@@ -1,11 +1,20 @@
 
 import streamlit as st
 import sys, os, json
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from frontend.styles.theme import CHARAKA_CSS, LOGO_HTML
-from frontend.components.sidebar import render_sidebar
-from core.constants import DOSHAS
+# Robust path handling
+_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
+if _root not in sys.path:
+    sys.path.insert(0, _root)
+
+try:
+    from charaka_vaidya.frontend.styles.theme import CHARAKA_CSS, LOGO_HTML
+    from charaka_vaidya.frontend.components.sidebar import render_sidebar
+    from charaka_vaidya.core.constants import DOSHAS
+except ImportError:
+    from frontend.styles.theme import CHARAKA_CSS, LOGO_HTML
+    from frontend.components.sidebar import render_sidebar
+    from core.constants import DOSHAS
 import requests
 
 st.set_page_config(page_title="Charaka Vaidya · Dosha Quiz", page_icon="🧘", layout="wide")

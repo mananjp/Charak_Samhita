@@ -1,8 +1,7 @@
-
-from rag.retriever import retrieve, retrieve_by_herb, retrieve_for_dosha
-from rag.reranker import rerank, format_context
-from pipeline.intent_classifier import classify_intent
-from utils.logger import get_logger
+from charaka_vaidya.rag.retriever import retrieve, retrieve_by_herb, retrieve_for_dosha
+from charaka_vaidya.rag.reranker import rerank, format_context
+from charaka_vaidya.pipeline.intent_classifier import classify_intent
+from charaka_vaidya.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

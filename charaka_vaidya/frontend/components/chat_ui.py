@@ -2,7 +2,7 @@ import streamlit as st
 import os, sys
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-API_BASE = os.getenv("API_BASE_URL", "http://localhost:8000")
+API_BASE = os.getenv("API_BASE_URL", "http://127.0.0.1:8888")
 
 def render_message(role: str, content: str):
     if role == "user":

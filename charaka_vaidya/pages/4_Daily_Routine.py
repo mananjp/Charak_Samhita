@@ -1,10 +1,18 @@
 
 import streamlit as st
 import sys, os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
 
-from frontend.styles.theme import CHARAKA_CSS, LOGO_HTML
-from frontend.components.sidebar import render_sidebar
+# Robust path handling
+_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "../"))
+if _root not in sys.path:
+    sys.path.insert(0, _root)
+
+try:
+    from charaka_vaidya.frontend.styles.theme import CHARAKA_CSS, LOGO_HTML
+    from charaka_vaidya.frontend.components.sidebar import render_sidebar
+except ImportError:
+    from frontend.styles.theme import CHARAKA_CSS, LOGO_HTML
+    from frontend.components.sidebar import render_sidebar
 import requests
 from datetime import datetime
 
@@ -30,7 +38,7 @@ selected_season = st.selectbox(
     index=list(SEASONS.keys()).index(auto_season),
 )
 
-API_BASE = os.getenv("API_BASE_URL", "http://localhost:8000")
+API_BASE = os.getenv("API_BASE_URL", "http://127.0.0.1:8888")
 try:
     resp = requests.get(f"{API_BASE}/daily-routine?season={selected_season}", timeout=10)
     data = resp.json() if resp.status_code == 200 else {}

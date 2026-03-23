@@ -1,8 +1,8 @@
 
 from fastapi import APIRouter, HTTPException
-from pipeline.context_builder import build_context
-from pipeline.llm_engine import generate_response
-import json, os
+from charaka_vaidya.pipeline.context_builder import build_context
+from charaka_vaidya.pipeline.llm_engine import generate_response
+import json
 
 router = APIRouter()
 

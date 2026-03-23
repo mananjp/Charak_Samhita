@@ -5,7 +5,7 @@ Injected via st.components.v1.html — no server round-trip needed.
 import streamlit as st
 import streamlit.components.v1 as stc
 import json, re
-from core.i18n import t, get_bcp47
+from charaka_vaidya.core.i18n import t, get_bcp47
 
 def render_speak_button(text: str, key: str = "speak_main"):
     """Render a TTS button that reads `text` aloud in the current language."""
