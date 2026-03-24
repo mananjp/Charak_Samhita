@@ -1,11 +1,21 @@
 
 import streamlit as st
 import sys, os
-sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
 
-from frontend.styles.theme import CHARAKA_CSS, LOGO_HTML
-from frontend.components.sidebar import render_sidebar
+# Add parent directory (Charak_Samhita) to path so charaka_vaidya is importable as a package
+_charaka_dir = os.path.abspath(os.path.dirname(__file__))
+_parent_dir = os.path.dirname(_charaka_dir)
+if _parent_dir not in sys.path:
+    sys.path.insert(0, _parent_dir)
 
+from charaka_vaidya.frontend.styles.theme import CHARAKA_CSS, LOGO_HTML
+from charaka_vaidya.frontend.components.sidebar import render_sidebar
+
+# Initialize session state for language (must be before page_config)
+if "lang" not in st.session_state:
+    st.session_state["lang"] = "en"
+
+# Ensure this is marked as the home page
 st.set_page_config(
     page_title="Charaka Vaidya",
     page_icon="🌿",

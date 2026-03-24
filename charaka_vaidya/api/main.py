@@ -1,8 +1,18 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from core.config import config
-from api.routes import chat, herbs, dosha, routine, samhita, transcribe
+import sys
+import os
+
+# Add parent directory (Charak_Samhita) to path so charaka_vaidya is importable as a package
+_api_dir = os.path.dirname(os.path.abspath(__file__))
+_charaka_dir = os.path.dirname(_api_dir)
+_parent_dir = os.path.dirname(_charaka_dir)
+if _parent_dir not in sys.path:
+    sys.path.insert(0, _parent_dir)
+
+from charaka_vaidya.core.config import config
+from charaka_vaidya.api.routes import chat, herbs, dosha, routine, samhita, transcribe
 
 app = FastAPI(
     title=config.APP_NAME,
@@ -14,7 +24,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[config.FRONTEND_URL, "http://localhost:8501", "*"],
+    allow_origins=[config.FRONTEND_URL, "http://localhost:8501", "http://localhost:5173", "http://localhost:3000", "*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -33,5 +43,5 @@ def health_check():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("api.main:app", host=config.API_HOST, port=config.API_PORT,
+    uvicorn.run(app, host=config.API_HOST, port=config.API_PORT,
                 reload=config.DEBUG)

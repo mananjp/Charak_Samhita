@@ -1,0 +1,16 @@
+.micBtn {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 2px solid var(--clr-sage);
+  background: white; color: var(--clr-sage);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: var(--transition); flex-shrink: 0;
+}
+.micBtn:hover { background: var(--clr-sage); color: white; }
+.micBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+.micRecording {
+  background: #e53e3e; border-color: #e53e3e; color: white;
+  animation: pulse-mic 1.2s ease-in-out infinite;
+}
+.spin { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes pulse-mic { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.6;transform:scale(1.1)} }

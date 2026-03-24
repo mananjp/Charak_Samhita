@@ -10,6 +10,7 @@ class ChatRequest(BaseModel):
     query:       str = Field(..., min_length=1, max_length=2000)
     history:     List[ChatMessage] = []
     simple_mode: bool = False
+    language:    Optional[str] = None  # "English", "Hindi", "Gujarati"
 
 class SourceRef(BaseModel):
     sthana:  str

@@ -1,0 +1,11 @@
+.speakBtn {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.25rem 0.625rem; border-radius: var(--radius-full);
+  border: 1px solid rgba(107,143,110,0.25);
+  background: rgba(107,143,110,0.08); color: var(--clr-sage);
+  font-size: 0.75rem; font-weight: 600; cursor: pointer;
+  transition: var(--transition);
+}
+.speakBtn:hover { background: rgba(107,143,110,0.15); }
+.active { background: var(--clr-terra); color: white; border-color: var(--clr-terra); }
+.lg { padding: 0.375rem 0.875rem; font-size: 0.825rem; }

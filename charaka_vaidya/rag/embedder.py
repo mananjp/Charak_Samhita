@@ -11,8 +11,8 @@ try:
     from langchain_chroma import Chroma
 except ImportError:
     from langchain_community.vectorstores import Chroma
-from core.config import config
-from utils.logger import get_logger
+from charaka_vaidya.core.config import config
+from charaka_vaidya.utils.logger import get_logger
 
 logger = get_logger(__name__)
 

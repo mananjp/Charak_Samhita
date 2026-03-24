@@ -4,8 +4,8 @@ Shows emergency number and health portal link based on user country.
 Defaults to India (IN) since the app is India-focused.
 """
 import streamlit as st
-from core.constants import UHC_DATA
-from core.i18n import t
+from charaka_vaidya.core.constants import UHC_DATA
+from charaka_vaidya.core.i18n import t
 
 def render_uhc_widget(default_country: str = "IN"):
     """Renders the UHC awareness banner unless user has dismissed it."""

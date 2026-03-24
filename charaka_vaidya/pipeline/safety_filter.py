@@ -1,5 +1,4 @@
-
-from core.constants import EMERGENCY_KEYWORDS
+from charaka_vaidya.core.constants import EMERGENCY_KEYWORDS
 
 EMERGENCY_RESPONSE = """
 🚨 **Immediate Medical Attention Required**

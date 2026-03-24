@@ -8,7 +8,7 @@ load_dotenv(_env_path)
 class Config:
     # ── Groq LLM (only provider) ──────────────────────────────────────────────
     GROQ_API_KEY  = os.getenv("GROQ_API_KEY", "")
-    LLM_MODEL     = os.getenv("LLM_MODEL", "llama-3.3-70b-versatile")
+    LLM_MODEL     = os.getenv("LLM_MODEL", "llama-3.1-8b-instant")
     # Other solid Groq models: "mixtral-8x7b-32768", "gemma2-9b-it", "llama-3.1-8b-instant"
 
     # ── Embeddings (HuggingFace, free + local, no API key needed) ────────────

@@ -1,7 +1,6 @@
-
 import re
-from core.constants import EMERGENCY_KEYWORDS, QUERY_INTENTS
-from utils.logger import get_logger
+from charaka_vaidya.core.constants import EMERGENCY_KEYWORDS
+from charaka_vaidya.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -28,3 +27,4 @@ def classify_intent(query: str) -> str:
     if any(re.search(p, q) for p in symptom_patterns):
         return "health_symptom"
     return "general"
+

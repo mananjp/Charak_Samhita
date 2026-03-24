@@ -4,6 +4,32 @@ STHANAS = [
     "Indriyasthana", "Chikitsasthana", "Kalpasthana", "Siddhisthana"
 ]
 
+EMERGENCY_KEYWORDS = [
+    "emergency", "critical", "life-threatening", "poisoning",
+    "severe pain", "unconscious", "not breathing", "choking",
+    "chest pain", "unable to breathe", "bleeding", "overdose",
+    "heart attack", "stroke", "can't breathe", "shortness of breath",
+    "suicidal", "want to die", "severe allergy", "anaphylaxis",
+    "high fever", "organ failure", "ambulance"
+]
+
+QUERY_INTENTS = ["health_symptom", "herb_query", "philosophy_lifestyle", "dosha_constitution", "emergency", "general"]
+
+AYURVEDIC_TERMS = {
+    "Agni": "Digestive fire / metabolic strength",
+    "Ama": "Undigested metabolic waste / toxin accumulation",
+    "Ojas": "Vital essence / immunity force",
+    "Prana": "Life force / vital energy",
+    "Dinacharya": "Daily routine aligned with natural rhythms",
+    "Ritucharya": "Seasonal health regimen",
+    "Rasayana": "Rejuvenation therapy",
+    "Panchakarma": "Five-fold detoxification procedures",
+    "Prakriti": "Individual body constitution",
+    "Vikriti": "Current state of imbalance",
+    "Srotas": "Body channels / micro-circulatory systems",
+    "Dhatu": "Seven body tissues (plasma, blood, muscle, fat, bone, marrow, reproductive)",
+}
+
 DOSHAS = {
     "vata": {
         "name": "Vata",
@@ -28,29 +54,6 @@ DOSHAS = {
     }
 }
 
-QUERY_INTENTS = ["health_symptom", "herb_query", "philosophy_lifestyle", "dosha_constitution", "emergency", "general"]
-
-EMERGENCY_KEYWORDS = [
-    "chest pain", "heart attack", "stroke", "can't breathe", "shortness of breath",
-    "suicidal", "want to die", "severe allergy", "anaphylaxis", "unconscious",
-    "high fever", "organ failure", "emergency", "ambulance"
-]
-
-AYURVEDIC_TERMS = {
-    "Agni": "Digestive fire / metabolic strength",
-    "Ama": "Undigested metabolic waste / toxin accumulation",
-    "Ojas": "Vital essence / immunity force",
-    "Prana": "Life force / vital energy",
-    "Dinacharya": "Daily routine aligned with natural rhythms",
-    "Ritucharya": "Seasonal health regimen",
-    "Rasayana": "Rejuvenation therapy",
-    "Panchakarma": "Five-fold detoxification procedures",
-    "Prakriti": "Individual body constitution",
-    "Vikriti": "Current state of imbalance",
-    "Srotas": "Body channels / micro-circulatory systems",
-    "Dhatu": "Seven body tissues (plasma, blood, muscle, fat, bone, marrow, reproductive)",
-}
-
 THEME = {
     "primary":     "#8B4513",   # Terracotta
     "secondary":   "#6B8E5A",   # Sage green
@@ -73,5 +76,5 @@ UHC_DATA = {
         "flag":        "🌐",
         "emergency":   "Local emergency number",
         "health_link": "https://www.who.int",
-    },
+    }
 }

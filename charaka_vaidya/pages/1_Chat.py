@@ -1,122 +1,164 @@
+import sys, os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import streamlit as st
-import sys, os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
-
-from frontend.styles.theme import CHARAKA_CSS, LOGO_HTML
-from frontend.components.chat_ui import render_message, call_chat_api, init_chat_state
 from frontend.components.sidebar import render_sidebar
-from frontend.components.source_panel import render_sources
-from core.i18n import get_lang, SUPPORTED_LANGUAGES
+from frontend.components.source_panel import render_sources as render_source_panel
+from frontend.components.voice_button import render_voice_input
+from frontend.components.speak_button import render_speak_button
+from frontend.components.uhc_widget import render_uhc_widget
+from frontend.styles.theme import inject_theme
+from core.i18n import t
+from pipeline.intent_classifier import classify_intent
+from pipeline.safety_filter import check_safety
+from pipeline.context_builder import build_context
+from pipeline.llm_engine import generate_response
+from pipeline.response_formatter import format_response
 
-st.set_page_config(page_title="Charaka Vaidya · Chat", page_icon="🌿", layout="wide")
-st.markdown(CHARAKA_CSS, unsafe_allow_html=True)
-
+st.set_page_config(page_title="Consult Vaidya", page_icon="💬", layout="wide")
+inject_theme()
 render_sidebar()
-st.markdown(LOGO_HTML, unsafe_allow_html=True)
-st.markdown("## 💬 Consult Charaka Vaidya")
-st.caption("Ask about symptoms, herbs, doshas, diet, or Ayurvedic lifestyle. Powered by RAG over the Charaka Samhita.")
 
-init_chat_state()
+st.title(f"💬 {t('chat_title')}")
+st.caption(t("chat_subtitle"))
 
-col1, col2 = st.columns([3, 1])
-with col2:
-    simple_mode = st.toggle("🔤 Simple Language", value=False, help="Adjusts complexity of explanations")
-    if st.button("🗑️ Clear Chat"):
-        st.session_state.messages = []
-        st.session_state.last_sources = []
+# ── UHC Widget ────────────────────────────────────────────────────────────────
+render_uhc_widget()
+
+# ── Chat History ──────────────────────────────────────────────────────────────
+if "messages" not in st.session_state:
+    st.session_state["messages"] = []
+if "simple_mode" not in st.session_state:
+    st.session_state["simple_mode"] = False
+
+# ── Toolbar ───────────────────────────────────────────────────────────────────
+col_mode, col_clear = st.columns([3, 1])
+with col_mode:
+    st.session_state["simple_mode"] = st.toggle(t("chat_simple_mode"), value=st.session_state["simple_mode"])
+with col_clear:
+    if st.button(t("chat_clear"), use_container_width=True):
+        st.session_state["messages"] = []
         st.rerun()
 
-# ── Display history ──────────────────────────────────────────────────────────
-chat_container = st.container()
-with chat_container:
-    for msg in st.session_state.messages:
-        render_message(msg["role"], msg["content"])
+# ── Render Chat History ───────────────────────────────────────────────────────
+for msg in st.session_state["messages"]:
+    with st.chat_message(msg["role"]):
+        st.markdown(msg["content"])
+        if msg["role"] == "assistant" and msg.get("sources"):
+            with st.expander(f"📚 {t('chat_sources_label')}"):
+                render_source_panel(msg["sources"])
+        if msg["role"] == "assistant":
+            render_speak_button(msg["content"], key=f"speak_{msg.get('ts', id(msg))}")
 
-# ── Source panel (last response) ─────────────────────────────────────────────
-if st.session_state.last_sources:
-    render_sources(st.session_state.last_sources, key_prefix="chat")
+# ── Voice Input ───────────────────────────────────────────────────────────────
+with st.expander(f"🎙️ {t('voice_start')} (Groq Whisper)", expanded=False):
+    voice_text = render_voice_input(key="chat_voice")
+    if voice_text:
+        st.session_state["pending_voice"] = voice_text
+
+# ── Text Input (prefilled from voice if available) ───────────────────────────
+pending = st.session_state.pop("pending_voice", None)
+voice_origin = False
+user_input = st.chat_input(
+    placeholder=t("chat_placeholder"),
+)
+if pending and not user_input:
+    user_input = pending
+    voice_origin = True
+
+# ── Quick Prompts ─────────────────────────────────────────────────────────────
+if not st.session_state["messages"]:
+    st.markdown(f"**{t('chat_try_asking')}**")
+    QUICK = {
+        "en": ["I have constant bloating and gas after meals",
+               "Tell me about Ashwagandha benefits",
+               "How should I structure my daily routine?"],
+        "hi": ["मुझे खाने के बाद पेट फूलने की समस्या है",
+               "अश्वगंधा के फायदे बताएं",
+               "दैनिक दिनचर्या कैसे बनाएं?"],
+        "gu": ["ખોરાક પછી પેટ ફૂલવાની સમસ્યા છે",
+               "અશ્વગંધાના ફાયદા બતાવો",
+               "દૈનિક દિનચર્યા કેવી રીતે બનાવી?"],
+    }
+    lang = st.session_state.get("lang", "en")
+    prompts = QUICK.get(lang, QUICK["en"])
+    cols = st.columns(len(prompts))
+    for i, prompt in enumerate(prompts):
+        if cols[i].button(prompt, key=f"quick_prompt_{i}", use_container_width=True):
+            st.session_state["pending_query"] = prompt
+            st.rerun()
+
+# ── Handle pending query from quick prompts ──────────────────────────────────
+pending_query = st.session_state.pop("pending_query", None)
+if pending_query and not user_input:
+    user_input = pending_query
+
+# ── Process Query ─────────────────────────────────────────────────────────────
+if user_input:
+    import time
+
+    # If query is from voice transcription, prefer detected transcription language.
+    # Otherwise fall back to current UI language for consultation language.
+    ui_lang_name = {
+        "en": "English",
+        "hi": "Hindi",
+        "gu": "Gujarati",
+    }.get(st.session_state.get("lang", "en"), "English")
+    response_language = st.session_state.get("consult_lang_name") if voice_origin else ui_lang_name
+
+    st.session_state["messages"].append({"role": "user", "content": user_input})
+    with st.chat_message("user"):
+        st.markdown(user_input)
+
+    with st.chat_message("assistant"):
+        sources = []
+        response_text = ""
+        with st.spinner("🌿 Consulting the Charaka Samhita..."):
+            try:
+                # Classify intent first
+                intent = classify_intent(user_input)
+
+                # Check safety with intent
+                is_emergency, emergency_msg = check_safety(user_input, intent)
+
+                if is_emergency:
+                    response_text = emergency_msg
+                    sources = []
+                else:
+                    # Build context and generate response
+                    context, sources = build_context(user_input, intent=intent)
+                    raw = generate_response(
+                        user_query=user_input,
+                        context=context,
+                        intent=intent,
+                        response_language=response_language,
+                        stream=False,
+                    )
+                    # format_response returns a dict; extract the text
+                    formatted = format_response(raw, intent, sources)
+                    response_text = formatted.get("text", raw) if isinstance(formatted, dict) else str(formatted)
+                    # also update sources from formatted response
+                    if isinstance(formatted, dict) and formatted.get("sources"):
+                        sources = formatted["sources"]
+
+            except Exception as e:
+                response_text = f"⚠️ **Error:** {str(e)}\n\nPlease check your Groq API key in the sidebar."
+                sources = []
+
+        st.markdown(response_text)
+        render_speak_button(response_text, key=f"speak_resp_{int(time.time())}")
+
+        if sources:
+            with st.expander(f"📚 {t('chat_sources_label')}"):
+                render_source_panel(sources)
+
+    ts = int(time.time())
+    st.session_state["messages"].append({
+        "role": "assistant",
+        "content": response_text,
+        "sources": sources,
+        "ts": ts,
+    })
 
 st.markdown("---")
-
-# ── Suggested prompts ────────────────────────────────────────────────────────
-st.markdown("**✨ Try asking:**")
-example_cols = st.columns(3)
-examples = [
-    "I have constant bloating and gas after meals",
-    "Tell me about Ashwagandha benefits",
-    "How should I structure my daily routine?",
-    "What is my body type if I feel cold and anxious?",
-    "Explain Triphala and how to use it",
-    "What foods should I avoid in summer?",
-]
-for i, ex in enumerate(examples):
-    with example_cols[i % 3]:
-        if st.button(ex, key=f"ex_{i}", use_container_width=True):
-            st.session_state["prefill_query"] = ex
-
-# ── Input form ────────────────────────────────────────────────────────────────
-prefill = st.session_state.pop("prefill_query", "")
-with st.form("chat_form", clear_on_submit=True):
-    user_input = st.text_area(
-        "Your question:",
-        value=prefill,
-        placeholder="e.g. I've been having trouble sleeping for weeks...",
-        height=80,
-        key="chat_input",
-    )
-    submitted = st.form_submit_button("🙏 Ask Vaidya", use_container_width=True)
-
-# ── Translation helper ───────────────────────────────────────────────────────
-def translate_answer(text: str, target_lang: str) -> str:
-    """Translate the answer to the target language using Groq LLM."""
-    if target_lang == "en":
-        return text
-    lang_name = SUPPORTED_LANGUAGES.get(target_lang, target_lang)
-    try:
-        from groq import Groq
-        from core.config import config
-        api_key = st.session_state.get("groq_api_key") or config.GROQ_API_KEY
-        if not api_key:
-            return text
-        client = Groq(api_key=api_key)
-        resp = client.chat.completions.create(
-            model=st.session_state.get("llm_model", config.LLM_MODEL),
-            messages=[
-                {"role": "system", "content": f"You are a translator. Translate the following text to {lang_name}. Keep all markdown formatting, emojis, and structure intact. Only translate the text, do not add anything else."},
-                {"role": "user", "content": text},
-            ],
-            temperature=0.3,
-            max_tokens=4096,
-        )
-        return resp.choices[0].message.content.strip()
-    except Exception as e:
-        st.warning(f"Translation failed: {e}")
-        return text
-
-if submitted and user_input.strip():
-    st.session_state.messages.append({"role": "user", "content": user_input.strip()})
-    render_message("user", user_input.strip())
-
-    with st.spinner("🌿 Consulting the Charaka Samhita..."):
-        history_for_api = st.session_state.messages[:-1][-6:]
-        response = call_chat_api(user_input.strip(), history_for_api, simple_mode)
-
-    answer   = response.get("answer", "")
-    sources  = response.get("sources", [])
-    is_emerg = response.get("is_emergency", False)
-
-    # Translate if user selected a non-English language
-    current_lang = get_lang()
-    if current_lang != "en" and answer:
-        with st.spinner(f"🌐 Translating to {SUPPORTED_LANGUAGES.get(current_lang, current_lang)}..."):
-            answer = translate_answer(answer, current_lang)
-
-    if is_emerg:
-        st.markdown(f'<div class="emergency-banner">{answer}</div>', unsafe_allow_html=True)
-    else:
-        render_message("assistant", answer)
-
-    st.session_state.messages.append({"role": "assistant", "content": answer})
-    st.session_state.last_sources = sources
-    st.rerun()
+st.caption(t("disclaimer"))

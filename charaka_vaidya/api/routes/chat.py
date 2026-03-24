@@ -1,13 +1,13 @@
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import StreamingResponse
-from api.schemas import ChatRequest, ChatResponse
-from pipeline.intent_classifier import classify_intent
-from pipeline.safety_filter import check_safety
-from pipeline.context_builder import build_context
-from pipeline.llm_engine import generate_response
-from pipeline.response_formatter import format_response
-from utils.logger import get_logger
+from charaka_vaidya.api.schemas import ChatRequest, ChatResponse
+from charaka_vaidya.pipeline.intent_classifier import classify_intent
+from charaka_vaidya.pipeline.safety_filter import check_safety
+from charaka_vaidya.pipeline.context_builder import build_context
+from charaka_vaidya.pipeline.llm_engine import generate_response
+from charaka_vaidya.pipeline.response_formatter import format_response
+from charaka_vaidya.utils.logger import get_logger
 
 router = APIRouter()
 logger = get_logger(__name__)
@@ -23,7 +23,7 @@ def chat_endpoint(req: ChatRequest):
 
         context, sources = build_context(req.query, intent)
         history = [m.dict() for m in req.history]
-        raw_response = generate_response(req.query, context, history, intent)
+        raw_response = generate_response(req.query, context, history, intent, response_language=req.language)
         formatted = format_response(raw_response, intent, sources)
 
         return ChatResponse(
