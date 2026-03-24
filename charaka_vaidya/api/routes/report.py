@@ -5,21 +5,50 @@ from charaka_vaidya.api.schemas import ReportRequest
 from io import BytesIO
 from datetime import datetime
 import re
+import os
+
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
 
 router = APIRouter()
 
+# ── Font Registration for Multi-language support (Gujarati/Hindi) ──
+# We try to find a common Windows font that supports Indic scripts
+FONT_REGISTERED = False
+try:
+    # Nirmala UI is a standard Windows font for Indian languages
+    font_path = "C:\\Windows\\Fonts\\Nirmala.ttf"
+    if os.path.exists(font_path):
+        pdfmetrics.registerFont(TTFont('Nirmala', font_path))
+        pdfmetrics.registerFont(TTFont('Nirmala-Bold', "C:\\Windows\\Fonts\\NirmalaB.ttf"))
+        FONT_REGISTERED = True
+    else:
+        # Try .ttc if .ttf is not found (sometimes it's a collection)
+        font_path_ttc = "C:\\Windows\\Fonts\\Nirmala.ttc"
+        if os.path.exists(font_path_ttc):
+            pdfmetrics.registerFont(TTFont('Nirmala', font_path_ttc))
+            pdfmetrics.registerFont(TTFont('Nirmala-Bold', font_path_ttc))
+            FONT_REGISTERED = True
+except Exception:
+    pass
+
+# Use Nirmala if registered, otherwise fallback to Helvetica
+BODY_FONT = "Nirmala" if FONT_REGISTERED else "Helvetica"
+BOLD_FONT = "Nirmala-Bold" if FONT_REGISTERED else "Helvetica-Bold"
+
 # ── Dosha color map ──
 DOSHA_COLORS = {
-    "Vata":  (106, 90, 205),   # Slate blue
-    "Pitta": (192, 92, 68),    # Terra
-    "Kapha": (107, 143, 110),  # Sage green
+    "Vata":  "#6A5ACD",   # Slate blue
+    "Pitta": "#C05C44",   # Terra
+    "Kapha": "#6B8F6E",   # Sage green
 }
 
-LEVEL_WIDTHS = {"High": 0.9, "Medium": 0.55, "Low": 0.25}
-
-
 def _strip_markdown(text: str) -> str:
-    """Strip markdown formatting for clean PDF text."""
+    """Strip markdown formatting and hidden metadata for clean PDF text."""
+    # First, strip the hidden DOSHA_DATA metadata block
+    text = re.sub(r'\[DOSHA_DATA:.*?\]', '', text, flags=re.DOTALL)
+    
+    # Standard Markdown stripping
     text = re.sub(r'#{1,6}\s?', '', text)
     text = re.sub(r'\*{1,2}(.*?)\*{1,2}', r'\1', text)
     text = re.sub(r'[_~`>]', '', text)
@@ -30,141 +59,182 @@ def _strip_markdown(text: str) -> str:
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text.strip()
 
-
 @router.post("/generate")
 def generate_report(req: ReportRequest):
     """Generate a branded PDF consultation report."""
     from reportlab.lib.pagesizes import A4
     from reportlab.lib.units import mm, cm
-    from reportlab.lib.colors import HexColor, Color
+    from reportlab.lib.colors import HexColor, Color, white
     from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable
-    from reportlab.lib.enums import TA_CENTER, TA_LEFT
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, HRFlowable, PageBreak
+    from reportlab.lib.enums import TA_CENTER, TA_LEFT, TA_RIGHT
+    from reportlab.graphics.shapes import Drawing, Rect
 
     buf = BytesIO()
-    doc = SimpleDocTemplate(buf, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm,
-                            leftMargin=2*cm, rightMargin=2*cm)
+    
+    # Custom Page Template for Border
+    def add_border(canvas, doc):
+        canvas.saveState()
+        canvas.setStrokeColor(HexColor("#D4A054")) # Gold border
+        canvas.setLineWidth(2)
+        canvas.rect(1*cm, 1*cm, A4[0]-2*cm, A4[1]-2*cm)
+        
+        # Footer
+        canvas.setFont(BODY_FONT, 8)
+        canvas.setFillColor(HexColor("#8B8B7A"))
+        canvas.drawCentredString(A4[0]/2, 0.7*cm, f"Charaka Vaidya - Science of Living | Page {doc.page}")
+        canvas.restoreState()
 
-    # ── Color palette (matching Chat Theme) ──
+    doc = SimpleDocTemplate(buf, pagesize=A4, topMargin=2.5*cm, bottomMargin=2.5*cm,
+                            leftMargin=2.5*cm, rightMargin=2.5*cm)
+
+    # ── Color palette ──
     forest  = HexColor("#1E3A34")
     gold    = HexColor("#D4A054")
     parch   = HexColor("#F5F0E8")
     terra   = HexColor("#C05C44")
     muted   = HexColor("#8B8B7A")
 
-    # ── Styles ──
+    # ── Styles (Using Unicode font if available) ──
     styles = getSampleStyleSheet()
-    styles.add(ParagraphStyle("AppTitle", fontName="Helvetica-Bold", fontSize=22,
-                               textColor=forest, spaceAfter=4))
-    styles.add(ParagraphStyle("Subtitle", fontName="Helvetica", fontSize=10,
-                               textColor=muted, spaceAfter=16))
-    styles.add(ParagraphStyle("SectionHead", fontName="Helvetica-Bold", fontSize=14,
-                               textColor=forest, spaceBefore=18, spaceAfter=8))
-    styles.add(ParagraphStyle("UserMsg", fontName="Helvetica-Bold", fontSize=10,
-                               textColor=forest, leftIndent=8, spaceBefore=10))
-    styles.add(ParagraphStyle("BotMsg", fontName="Helvetica", fontSize=10,
-                               textColor=HexColor("#333333"), leftIndent=8, spaceBefore=4,
-                               spaceAfter=10, leading=14))
-    styles.add(ParagraphStyle("Disclaimer", fontName="Helvetica-Oblique", fontSize=8,
-                               textColor=muted, spaceBefore=20, alignment=TA_CENTER))
-    styles.add(ParagraphStyle("DoshaLabel", fontName="Helvetica-Bold", fontSize=11,
-                               textColor=forest))
+    styles.add(ParagraphStyle("AppTitle", fontName=BOLD_FONT, fontSize=28,
+                               textColor=forest, spaceAfter=18, alignment=TA_CENTER, leading=32))
+    styles.add(ParagraphStyle("Tagline", fontName=BODY_FONT, fontSize=11,
+                               textColor=gold, spaceAfter=25, alignment=TA_CENTER, italic=True))
+    styles.add(ParagraphStyle("Subtitle", fontName=BODY_FONT, fontSize=10,
+                               textColor=muted, spaceAfter=20, alignment=TA_RIGHT))
+    styles.add(ParagraphStyle("SectionHead", fontName=BOLD_FONT, fontSize=16,
+                               textColor=forest, spaceBefore=25, spaceAfter=12,
+                               borderPadding=6, backColor=parch))
+    styles.add(ParagraphStyle("UserMsg", fontName=BOLD_FONT, fontSize=11,
+                               textColor=forest, leftIndent=12, spaceBefore=15))
+    styles.add(ParagraphStyle("BotMsg", fontName=BODY_FONT, fontSize=10,
+                               textColor=HexColor("#2C3E50"), leftIndent=25, spaceBefore=8,
+                               spaceAfter=18, leading=16))
+    styles.add(ParagraphStyle("Disclaimer", fontName=BODY_FONT, fontSize=8,
+                               textColor=muted, spaceBefore=35, alignment=TA_CENTER, leading=11))
+    styles.add(ParagraphStyle("TableHeader", fontName=BOLD_FONT, fontSize=11,
+                               textColor=white, alignment=TA_CENTER))
+    styles.add(ParagraphStyle("DoshaLabel", fontName=BOLD_FONT, fontSize=12,
+                               textColor=forest, spaceBefore=12))
 
     story = []
 
     # ── Header ──
     story.append(Paragraph("🌿 Charaka Vaidya", styles["AppTitle"]))
+    story.append(Paragraph("Ancient Wisdom for Modern Healing", styles["Tagline"]))
+    
     story.append(Paragraph(
-        f"Ayurvedic Consultation Report | {datetime.now().strftime('%B %d, %Y at %I:%M %p')} | Language: {req.language}",
+        f"<b>Consultation Ref:</b> CV-{datetime.now().strftime('%Y%m%d%H%M')}<br/>"
+        f"<b>Date:</b> {datetime.now().strftime('%B %d, %Y')}<br/>"
+        f"<b>Language:</b> {req.language}",
         styles["Subtitle"]
     ))
-    story.append(HRFlowable(width="100%", thickness=1.5, color=gold, spaceAfter=12))
+    story.append(HRFlowable(width="100%", thickness=2.5, color=gold, spaceAfter=20))
 
     # ── Dosha Analysis Section ──
     if req.dosha_analysis:
         da = req.dosha_analysis
-        story.append(Paragraph("📊 Dosha Imbalance Analysis", styles["SectionHead"]))
+        story.append(Paragraph("📊 Dosha Imbalance Summary", styles["SectionHead"]))
 
         # Summary table
         dosha_data = [
-            ["Dosha", "Involvement", ""],
-            ["Vata (Wind)", da.vata, ""],
-            ["Pitta (Fire)", da.pitta, ""],
-            ["Kapha (Earth)", da.kapha, ""],
+            [Paragraph("Dosha", styles["TableHeader"]), Paragraph("Involvement Level", styles["TableHeader"])],
+            ["Vata (Wind & Ether)", da.vata],
+            ["Pitta (Fire & Water)", da.pitta],
+            ["Kapha (Earth & Water)", da.kapha],
         ]
-        t = Table(dosha_data, colWidths=[120, 80, 200])
+        t = Table(dosha_data, colWidths=[200, 140])
         t.setStyle(TableStyle([
             ('BACKGROUND', (0, 0), (-1, 0), forest),
-            ('TEXTCOLOR', (0, 0), (-1, 0), HexColor("#FFFFFF")),
-            ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-            ('FONTSIZE', (0, 0), (-1, -1), 10),
-            ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+            ('TEXTCOLOR', (0, 0), (-1, 0), white),
+            ('FONTNAME', (0, 0), (-1, -1), BOLD_FONT),
+            ('FONTSIZE', (0, 0), (-1, -1), 11),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
             ('GRID', (0, 0), (-1, -1), 0.5, muted),
-            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [parch, HexColor("#FFFFFF")]),
-            ('TOPPADDING', (0, 0), (-1, -1), 6),
-            ('BOTTOMPADDING', (0, 0), (-1, -1), 6),
+            ('ROWBACKGROUNDS', (0, 1), (-1, -1), [white, parch]),
+            ('TOPPADDING', (0, 0), (-1, -1), 10),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 10),
         ]))
         story.append(t)
-        story.append(Spacer(1, 8))
+        story.append(Spacer(1, 15))
 
         story.append(Paragraph(
-            f"<b>Primary Imbalance:</b> {da.dominant_dosha}", styles["DoshaLabel"]
+            f"<b>Primary Constitution Imbalance:</b> <font color='#C05C44'>{da.dominant_dosha}</font>", 
+            styles["DoshaLabel"]
         ))
 
         # Per-symptom breakdown
         if da.per_symptom:
-            story.append(Spacer(1, 8))
-            symptom_data = [["Symptom", "Dosha Classification"]]
+            story.append(Spacer(1, 15))
+            story.append(Paragraph("Symptom-Specific Classification", styles["DoshaLabel"]))
+            symptom_data = [
+                [Paragraph("Symptom Mentioned", styles["TableHeader"]), Paragraph("Dosha Association", styles["TableHeader"])]
+            ]
             for s in da.per_symptom:
-                symptom_data.append([s.symptom, s.dosha])
-            st = Table(symptom_data, colWidths=[250, 150])
+                # Ensure no metadata or internal labels leak here
+                if s.symptom and "[DOSHA_DATA" not in s.symptom:
+                    symptom_data.append([s.symptom, s.dosha])
+            
+            if len(symptom_data) > 1:
+                st = Table(symptom_data, colWidths=[260, 140])
             st.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, 0), gold),
-                ('TEXTCOLOR', (0, 0), (-1, 0), HexColor("#FFFFFF")),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, -1), 9),
+                ('TEXTCOLOR', (0, 0), (-1, 0), white),
+                ('FONTNAME', (0, 0), (-1, -1), BOLD_FONT),
                 ('GRID', (0, 0), (-1, -1), 0.5, muted),
-                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [HexColor("#FFFFFF"), parch]),
-                ('TOPPADDING', (0, 0), (-1, -1), 5),
-                ('BOTTOMPADDING', (0, 0), (-1, -1), 5),
+                ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+                ('ROWBACKGROUNDS', (0, 1), (-1, -1), [white, parch]),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
             ]))
             story.append(st)
 
-        story.append(Spacer(1, 12))
-        story.append(HRFlowable(width="100%", thickness=0.5, color=muted, spaceAfter=8))
+        story.append(Spacer(1, 20))
 
     # ── Conversation Transcript ──
-    story.append(Paragraph("💬 Consultation Transcript", styles["SectionHead"]))
+    story.append(Paragraph("💬 Consultation Narrative", styles["SectionHead"]))
 
     for msg in req.messages:
         if msg.role == "user":
-            story.append(Paragraph(f"🧑 Patient: {msg.content}", styles["UserMsg"]))
+            story.append(Paragraph(f"<b>Patient:</b> {msg.content}", styles["UserMsg"]))
         elif msg.role == "assistant":
             clean = _strip_markdown(msg.content)
-            # Truncate very long responses for PDF readability
-            if len(clean) > 2000:
-                clean = clean[:2000] + "\n\n[... response truncated for PDF ...]"
-            story.append(Paragraph(f"🌿 Vaidya: {clean}", styles["BotMsg"]))
+            # Remove redundant "Symptoms Identified" header if it's already in the top section
+            clean = re.sub(r'^Symptoms Identified:\n?', '', clean, flags=re.IGNORECASE)
+            
+            if len(clean) > 2800:
+                clean = clean[:2800] + "\n\n[... response truncated for brevity ...]"
+            
+            if clean.strip():
+                story.append(Paragraph(f"{clean}", styles["BotMsg"]))
+
+    # ── Vaidya's Footer ──
+    story.append(Spacer(1, 50))
+    story.append(HRFlowable(width="100%", thickness=1, color=muted, spaceAfter=12))
+    
+    # Branded signature
+    sig_data = [
+        [Paragraph("<b>Clinically Assisted AI Diagnostics</b><br/>Charaka Vaidya Proprietary System", styles["BotMsg"]), 
+         Paragraph("<b>Authenticated By</b><br/>Charaka Samhita Digital Engine", styles["Subtitle"])]
+    ]
+    sig_table = Table(sig_data, colWidths=[280, 200])
+    story.append(sig_table)
 
     # ── Disclaimer ──
-    story.append(Spacer(1, 20))
-    story.append(HRFlowable(width="100%", thickness=0.5, color=muted, spaceAfter=8))
     story.append(Paragraph(
-        "⚠️ This report is generated by Charaka Vaidya, an AI-powered educational tool. "
-        "It is NOT a substitute for professional medical advice. Always consult a qualified "
-        "Ayurvedic practitioner or medical doctor for health decisions.",
-        styles["Disclaimer"]
-    ))
-    story.append(Paragraph(
-        f"Aligned with UN SDG 3 — Good Health & Well-Being | Generated on {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+        "<b>LEGAL DISCLAIMER:</b> This document is for educational purposes only. It is generated using Artificial Intelligence "
+        "trained on the Charaka Samhita. It should not be treated as a medical prescription. Ayurveda is a delicate science; "
+        "please consult a certified Ayurvedic practitioner (BAMS/MD) before starting any regimen.",
         styles["Disclaimer"]
     ))
 
-    # ── Build PDF ──
-    doc.build(story)
+    # ── Build PDF with Border ──
+    doc.build(story, onFirstPage=add_border, onLaterPages=add_border)
     buf.seek(0)
 
-    filename = f"charaka_consultation_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
+    filename = f"Vaidya_Report_{datetime.now().strftime('%Y%m%d_%H%M')}.pdf"
     return StreamingResponse(
         buf,
         media_type="application/pdf",
