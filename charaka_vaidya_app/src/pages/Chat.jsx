@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ReactMarkdown from 'react-markdown';
 import { sendMessage, addUserMessage, clearChat, toggleSimpleMode } from '../features/chat/chatSlice';
 import VoiceInput from '../components/Voice/VoiceInput';
-import SpeakButton from '../components/Voice/SpeakButton';
-import { MessageCircle, Send, Trash2, Sparkles, BookOpen, Globe, AlertTriangle } from 'lucide-react';
+import { reportAPI } from '../app/api';
+import { MessageCircle, Send, Trash2, Sparkles, BookOpen, Globe, AlertTriangle, FileDown } from 'lucide-react';
 import styles from './Chat.module.css';
 
 const LANGUAGES = [
@@ -40,12 +40,31 @@ const SUGGESTIONS = {
 
 export default function Chat() {
   const dispatch = useDispatch();
-  const { messages, sources, loading, simpleMode, error } = useSelector((s) => s.chat);
+  const { messages, sources, loading, simpleMode, error, doshaAnalysis } = useSelector((s) => s.chat);
   const [input, setInput] = useState('');
   const [selectedLang, setSelectedLang] = useState('English');
   const [langOpen, setLangOpen] = useState(false);
+  const [downloading, setDownloading] = useState(false);
   const endRef = useRef(null);
   const langRef = useRef(null);
+
+  const handleDownloadReport = async () => {
+    setDownloading(true);
+    try {
+      const res = await reportAPI.generate(messages, doshaAnalysis, selectedLang);
+      const blob = new Blob([res.data], { type: 'application/pdf' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `charaka_consultation_${Date.now()}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      console.error('Report download failed:', e);
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -146,6 +165,17 @@ export default function Chat() {
           <button className={styles.clearBtn} onClick={() => dispatch(clearChat())}>
             <Trash2 size={14} />
           </button>
+          {messages.length > 0 && (
+            <button
+              className={styles.downloadBtn}
+              onClick={handleDownloadReport}
+              disabled={downloading}
+              title="Download consultation report as PDF"
+            >
+              <FileDown size={14} />
+              {downloading ? 'Generating...' : 'Report'}
+            </button>
+          )}
         </div>
       </div>
 
@@ -185,6 +215,24 @@ export default function Chat() {
               {msg.role === 'assistant' ? (
                 <div className={styles.botContent}>
                   <ReactMarkdown>{msg.content}</ReactMarkdown>
+                  {msg.meta?.dosha_analysis && (
+                    <div className={styles.doshaCard}>
+                      <div className={styles.doshaHeader}>📊 Dosha Analysis</div>
+                      <div className={styles.doshaBadges}>
+                        {['vata', 'pitta', 'kapha'].map(d => (
+                          <span
+                            key={d}
+                            className={`${styles.doshaBadge} ${styles[`dosha${d.charAt(0).toUpperCase() + d.slice(1)}`]} ${msg.meta.dosha_analysis.dominant_dosha?.toLowerCase() === d ? styles.doshaDominant : ''}`}
+                          >
+                            {d.charAt(0).toUpperCase() + d.slice(1)}: {msg.meta.dosha_analysis[d]}
+                          </span>
+                        ))}
+                      </div>
+                      <div className={styles.doshaDominantLabel}>
+                        Primary: <strong>{msg.meta.dosha_analysis.dominant_dosha}</strong>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <span>{msg.content}</span>

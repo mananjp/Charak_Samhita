@@ -1,6 +1,6 @@
 from groq import Groq
 from charaka_vaidya.core.config import config
-from charaka_vaidya.core.prompts import SYSTEM_PROMPT
+from charaka_vaidya.core.prompts import SYSTEM_PROMPT, MULTI_SYMPTOM_PROMPT
 from charaka_vaidya.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -28,11 +28,24 @@ def generate_response(
     client  = get_client()
     history = chat_history or []
 
+    # Choose prompt based on intent
+    is_multi = intent == "multi_symptom"
+    system_prompt = MULTI_SYMPTOM_PROMPT if is_multi else SYSTEM_PROMPT
+
     lang_directive = ""
     if response_language:
         lang_directive = f"\n\nIMPORTANT: Write the full response in {response_language}. Keep citations and structure in that language."
 
-    user_message = f"""RETRIEVED CONTEXT FROM CHARAKA SAMHITA:
+    if is_multi:
+        user_message = f"""RETRIEVED CONTEXT FROM CHARAKA SAMHITA:
+{context}
+
+PATIENT'S DESCRIPTION: {user_query}
+
+Analyze ALL symptoms mentioned above using the Multi-Symptom Diagnostic Protocol.
+Classify each symptom by Vata/Pitta/Kapha and provide a unified treatment plan.{lang_directive}"""
+    else:
+        user_message = f"""RETRIEVED CONTEXT FROM CHARAKA SAMHITA:
 {context}
 
 USER QUERY: {user_query}
@@ -44,18 +57,19 @@ Layer 2 — Translate into plain, accessible language
 Layer 3 — What does modern science add?
 Layer 4 — Practical, actionable guidance{lang_directive}"""
 
-    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
+    messages = [{"role": "system", "content": system_prompt}]
     for msg in history[-6:]:
         messages.append({"role": msg["role"], "content": msg["content"]})
     messages.append({"role": "user", "content": user_message})
 
-    logger.info(f"Groq call | model={config.LLM_MODEL} | intent={intent}")
+    max_tok = 6000 if is_multi else 4800
+    logger.info(f"Groq call | model={config.LLM_MODEL} | intent={intent} | multi={is_multi}")
 
     response = client.chat.completions.create(
         model=config.LLM_MODEL,
         messages=messages,
         temperature=0.7,
-        max_tokens=4800,
+        max_tokens=max_tok,
         stream=stream,
     )
 
@@ -70,3 +84,4 @@ def stream_response(user_query: str, context: str, chat_history: list = None, in
         delta = chunk.choices[0].delta.content
         if delta:
             yield delta
+

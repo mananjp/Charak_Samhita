@@ -129,6 +129,48 @@
 
 .disclaimer { text-align: center; font-size: 0.75rem; color: var(--clr-muted); margin-top: 0.75rem; }
 
+/* ── Download Report Button ── */
+.downloadBtn {
+  display: flex; align-items: center; gap: 0.3rem;
+  padding: 0.4rem 0.875rem; border-radius: var(--radius-full);
+  border: 1.5px solid rgba(107,143,110,0.3); background: var(--clr-forest);
+  font-size: 0.8rem; font-weight: 700; cursor: pointer; color: white;
+  transition: var(--transition);
+}
+.downloadBtn:hover { background: var(--clr-sage); border-color: var(--clr-sage); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(30,58,52,0.2); }
+.downloadBtn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+/* ── Dosha Analysis Card ── */
+.doshaCard {
+  margin-top: 0.75rem; padding: 0.875rem 1rem;
+  background: linear-gradient(135deg, var(--clr-parchment) 0%, #f0ebe0 100%);
+  border: 1.5px solid rgba(212,160,84,0.25);
+  border-radius: var(--radius-lg);
+}
+.doshaHeader {
+  font-family: var(--font-serif); font-size: 0.9rem; font-weight: 700;
+  color: var(--clr-forest); margin-bottom: 0.625rem;
+}
+.doshaBadges { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.doshaBadge {
+  padding: 0.3rem 0.75rem; border-radius: var(--radius-full);
+  font-size: 0.75rem; font-weight: 700; border: 1.5px solid transparent;
+  transition: var(--transition);
+}
+.doshaVata { background: rgba(106,90,205,0.12); color: #6A5ACD; border-color: rgba(106,90,205,0.25); }
+.doshaPitta { background: rgba(192,92,68,0.12); color: var(--clr-terra); border-color: rgba(192,92,68,0.25); }
+.doshaKapha { background: rgba(107,143,110,0.12); color: var(--clr-sage); border-color: rgba(107,143,110,0.25); }
+.doshaDominant {
+  font-weight: 900; transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.doshaVata.doshaDominant { background: rgba(106,90,205,0.22); }
+.doshaPitta.doshaDominant { background: rgba(192,92,68,0.22); }
+.doshaKapha.doshaDominant { background: rgba(107,143,110,0.22); }
+.doshaDominantLabel {
+  font-size: 0.8rem; color: var(--clr-forest); margin-top: 0.25rem;
+}
+
 @media (max-width: 600px) {
   .header { flex-direction: column; }
   .bubble { max-width: 92%; }

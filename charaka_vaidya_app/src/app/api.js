@@ -36,8 +36,18 @@ export const transcribeAPI = {
     api.post('/transcribe', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
 };
 
+export const reportAPI = {
+  generate: (messages, doshaAnalysis = null, language = 'English') =>
+    api.post('/report/generate', {
+      messages: messages.map(m => ({ role: m.role, content: m.content })),
+      dosha_analysis: doshaAnalysis,
+      language,
+    }, { responseType: 'blob' }),
+};
+
 export const healthAPI = {
   check: () => api.get('/health'),
 };
 
 export default api;
+

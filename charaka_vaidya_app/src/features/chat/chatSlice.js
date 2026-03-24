@@ -21,6 +21,7 @@ const chatSlice = createSlice({
     loading: false,
     error: null,
     simpleMode: false,
+    doshaAnalysis: null,
   },
   reducers: {
     addUserMessage: (state, action) => {
@@ -29,6 +30,7 @@ const chatSlice = createSlice({
     clearChat: (state) => {
       state.messages = [];
       state.sources = [];
+      state.doshaAnalysis = null;
     },
     toggleSimpleMode: (state) => {
       state.simpleMode = !state.simpleMode;
@@ -44,6 +46,9 @@ const chatSlice = createSlice({
         state.loading = false;
         state.messages.push({ role: 'assistant', content: action.payload.answer, meta: action.payload });
         state.sources = action.payload.sources || [];
+        if (action.payload.dosha_analysis) {
+          state.doshaAnalysis = action.payload.dosha_analysis;
+        }
       })
       .addCase(sendMessage.rejected, (state, action) => {
         state.loading = false;
@@ -54,3 +59,4 @@ const chatSlice = createSlice({
 
 export const { addUserMessage, clearChat, toggleSimpleMode } = chatSlice.actions;
 export default chatSlice.reducer;
+
