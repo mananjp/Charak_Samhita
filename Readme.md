@@ -22,7 +22,7 @@ cp /your/path/charaka_samhita.pdf data/charaka_samhita.pdf
 python scripts/ingest.py
 
 # 5a. Start FastAPI backend  (Terminal 1)
-uvicorn api.main:app --reload --port 8000
+uvicorn api.main:app --reload --port 8888
 
 # 5b. Start Streamlit frontend  (Terminal 2)
 streamlit run app.py
