@@ -23,7 +23,7 @@ def chat_endpoint(req: ChatRequest):
 
         context, sources = build_context(req.query, intent)
         history = [m.dict() for m in req.history]
-        raw_response = generate_response(req.query, context, history, intent)
+        raw_response = generate_response(req.query, context, history, intent, response_language=req.language)
         formatted = format_response(raw_response, intent, sources)
 
         return ChatResponse(
@@ -32,7 +32,9 @@ def chat_endpoint(req: ChatRequest):
             sources=formatted["sources"],
             has_disclaimer=formatted["has_disclaimer"],
             is_emergency=False,
+            dosha_analysis=formatted.get("dosha_analysis"),
         )
     except Exception as e:
         logger.error(f"Chat error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+

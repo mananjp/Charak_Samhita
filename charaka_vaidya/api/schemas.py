@@ -10,6 +10,7 @@ class ChatRequest(BaseModel):
     query:       str = Field(..., min_length=1, max_length=2000)
     history:     List[ChatMessage] = []
     simple_mode: bool = False
+    language:    Optional[str] = None  # "English", "Hindi", "Gujarati"
 
 class SourceRef(BaseModel):
     sthana:  str
@@ -18,12 +19,24 @@ class SourceRef(BaseModel):
     score:   float
     tags:    List[str]
 
+class DoshaSymptom(BaseModel):
+    symptom: str
+    dosha:   str
+
+class DoshaAnalysis(BaseModel):
+    dominant_dosha: str = "Unknown"
+    vata:           str = "Low"
+    pitta:          str = "Low"
+    kapha:          str = "Low"
+    per_symptom:    List[DoshaSymptom] = []
+
 class ChatResponse(BaseModel):
-    answer:        str
-    intent:        str
-    sources:       List[SourceRef]
+    answer:         str
+    intent:         str
+    sources:        List[SourceRef]
     has_disclaimer: bool
-    is_emergency:  bool
+    is_emergency:   bool
+    dosha_analysis: Optional[DoshaAnalysis] = None
 
 class HerbResponse(BaseModel):
     name:             str
@@ -58,3 +71,9 @@ class SamhitaSearchRequest(BaseModel):
     query:   str
     top_k:   int = 5
     sthana:  Optional[str] = None
+
+class ReportRequest(BaseModel):
+    messages:       List[ChatMessage]
+    dosha_analysis: Optional[DoshaAnalysis] = None
+    language:       str = "English"
+

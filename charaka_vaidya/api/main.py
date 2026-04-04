@@ -12,7 +12,7 @@ if _parent_dir not in sys.path:
     sys.path.insert(0, _parent_dir)
 
 from charaka_vaidya.core.config import config
-from charaka_vaidya.api.routes import chat, herbs, dosha, routine, samhita, transcribe
+from charaka_vaidya.api.routes import chat, herbs, dosha, routine, samhita, transcribe, report
 
 app = FastAPI(
     title=config.APP_NAME,
@@ -24,7 +24,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[config.FRONTEND_URL, "http://localhost:8501", "*"],
+    allow_origins=[config.FRONTEND_URL, "http://localhost:8501", "http://localhost:5173", "http://localhost:3000", "*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -36,6 +36,7 @@ app.include_router(dosha.router,   prefix="/assess-dosha", tags=["Dosha"])
 app.include_router(routine.router, prefix="/daily-routine",tags=["Routine"])
 app.include_router(samhita.router, prefix="/search-samhita",tags=["Samhita"])
 app.include_router(transcribe.router, prefix="/transcribe", tags=["Transcribe"])
+app.include_router(report.router, prefix="/report", tags=["Report"])
 
 @app.get("/health")
 def health_check():
