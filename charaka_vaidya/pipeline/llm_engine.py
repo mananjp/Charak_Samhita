@@ -1,9 +1,7 @@
 from groq import Groq
-import re
-import os
-from charaka_vaidya.core.config import config
-from charaka_vaidya.core.prompts import SYSTEM_PROMPT, MULTI_SYMPTOM_PROMPT
-from charaka_vaidya.utils.logger import get_logger
+from core.config import config
+from core.prompts import SYSTEM_PROMPT
+from utils.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -42,25 +40,7 @@ def generate_response(
     client  = get_client()
     history = chat_history or []
 
-    # Choose prompt based on intent
-    is_multi = intent == "multi_symptom"
-    system_prompt = MULTI_SYMPTOM_PROMPT if is_multi else SYSTEM_PROMPT
-
-    lang_directive = ""
-    if response_language:
-        lang_directive = f"\n\nIMPORTANT: Write the full response in {response_language}. Keep citations and structure in that language."
-
-    if is_multi:
-        user_message = f"""RETRIEVED CONTEXT FROM CHARAKA SAMHITA:
-{context}
-
-PATIENT'S DESCRIPTION: {user_query}
-
-Analyze ALL symptoms mentioned above using the Multi-Symptom Diagnostic Protocol.
-Classify each symptom by Vata/Pitta/Kapha and provide a unified treatment plan.{lang_directive}
-MANDATORY: Ensure the 'Dosha Imbalance Summary' table has proper newlines between every row. NO SINGLE-LINE TABLES."""
-    else:
-        user_message = f"""RETRIEVED CONTEXT FROM CHARAKA SAMHITA:
+    user_message = f"""RETRIEVED CONTEXT FROM CHARAKA SAMHITA:
 {context}
 
 USER QUERY: {user_query}

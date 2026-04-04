@@ -1,18 +1,8 @@
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import sys
-import os
-
-# Add parent directory (Charak_Samhita) to path so charaka_vaidya is importable as a package
-_api_dir = os.path.dirname(os.path.abspath(__file__))
-_charaka_dir = os.path.dirname(_api_dir)
-_parent_dir = os.path.dirname(_charaka_dir)
-if _parent_dir not in sys.path:
-    sys.path.insert(0, _parent_dir)
-
-from charaka_vaidya.core.config import config
-from charaka_vaidya.api.routes import chat, herbs, dosha, routine, samhita, transcribe, report
+from core.config import config
+from api.routes import chat, herbs, dosha, routine, samhita, transcribe
 
 app = FastAPI(
     title=config.APP_NAME,
