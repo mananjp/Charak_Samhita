@@ -8,9 +8,9 @@ Usage:
 import argparse, sys, os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from rag.document_loader import load_and_chunk_pdf, save_chunks_manifest
-from rag.embedder import build_vector_store
-from utils.logger import get_logger
+from charaka_vaidya.rag.document_loader import load_and_chunk_pdf, save_chunks_manifest
+from charaka_vaidya.rag.embedder import build_vector_store
+from charaka_vaidya.utils.logger import get_logger
 
 logger = get_logger("ingest")
 

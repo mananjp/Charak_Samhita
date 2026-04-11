@@ -2,18 +2,18 @@ import sys, os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import streamlit as st
-from frontend.components.sidebar import render_sidebar
-from frontend.components.source_panel import render_sources as render_source_panel
-from frontend.components.voice_button import render_voice_input
-from frontend.components.speak_button import render_speak_button
-from frontend.components.uhc_widget import render_uhc_widget
-from frontend.styles.theme import inject_theme
-from core.i18n import t
-from pipeline.intent_classifier import classify_intent
-from pipeline.safety_filter import check_safety
-from pipeline.context_builder import build_context
-from pipeline.llm_engine import generate_response
-from pipeline.response_formatter import format_response
+from charaka_vaidya.frontend.components.sidebar import render_sidebar
+from charaka_vaidya.frontend.components.source_panel import render_sources as render_source_panel
+from charaka_vaidya.frontend.components.voice_button import render_voice_input
+from charaka_vaidya.frontend.components.speak_button import render_speak_button
+from charaka_vaidya.frontend.components.uhc_widget import render_uhc_widget
+from charaka_vaidya.frontend.styles.theme import inject_theme
+from charaka_vaidya.core.i18n import t
+from charaka_vaidya.pipeline.intent_classifier import classify_intent
+from charaka_vaidya.pipeline.safety_filter import check_safety
+from charaka_vaidya.pipeline.context_builder import build_context
+from charaka_vaidya.pipeline.llm_engine import generate_response
+from charaka_vaidya.pipeline.response_formatter import format_response
 
 st.set_page_config(page_title="Consult Vaidya", page_icon="💬", layout="wide")
 inject_theme()

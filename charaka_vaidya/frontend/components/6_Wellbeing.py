@@ -3,9 +3,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..",
 
 import streamlit as st
 from datetime import date, timedelta
-from frontend.components.sidebar import render_sidebar
-from frontend.styles.theme import inject_theme
-from core.i18n import t
+from charaka_vaidya.frontend.components.sidebar import render_sidebar
+from charaka_vaidya.frontend.styles.theme import inject_theme
+from charaka_vaidya.core.i18n import t
 
 st.set_page_config(page_title="Well-Being Tracker", page_icon="💚", layout="centered")
 inject_theme()
