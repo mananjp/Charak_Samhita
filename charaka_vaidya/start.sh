@@ -9,14 +9,9 @@ if [ ! -d "data/chroma_db" ]; then
   python scripts/ingest.py
 fi
 
-# Start FastAPI backend in background
-echo "  → Starting FastAPI on port 8000..."
-uvicorn api.main:app --host 0.0.0.0 --port 8000 &
+# Use Render's $PORT env var, fallback to 8000 for local dev
+PORT=${PORT:-8000}
 
-# Start Streamlit frontend in foreground
-echo "  → Starting Streamlit on port 8501..."
-streamlit run app.py \
-  --server.port 8501 \
-  --server.address 0.0.0.0 \
-  --server.headless true \
-  --browser.gatherUsageStats false
+# Start FastAPI backend
+echo "  → Starting FastAPI on port $PORT..."
+uvicorn api.main:app --host 0.0.0.0 --port $PORT

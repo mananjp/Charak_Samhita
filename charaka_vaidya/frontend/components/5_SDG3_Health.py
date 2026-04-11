@@ -2,11 +2,11 @@ import sys, os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 import streamlit as st
-from frontend.components.sidebar import render_sidebar
-from frontend.components.speak_button import render_speak_button
-from frontend.components.uhc_widget import render_uhc_widget
-from frontend.styles.theme import inject_theme
-from core.i18n import t, sdg3
+from charaka_vaidya.frontend.components.sidebar import render_sidebar
+from charaka_vaidya.frontend.components.speak_button import render_speak_button
+from charaka_vaidya.frontend.components.uhc_widget import render_uhc_widget
+from charaka_vaidya.frontend.styles.theme import inject_theme
+from charaka_vaidya.core.i18n import t, sdg3
 
 st.set_page_config(page_title="SDG 3 Health", page_icon="🌍", layout="wide")
 inject_theme()

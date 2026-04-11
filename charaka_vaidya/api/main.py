@@ -1,8 +1,17 @@
+import sys, os
+
+# Ensure the parent directory (Charak_Samhita) is on sys.path
+# so that "from charaka_vaidya.*" imports resolve correctly on Render / any host
+_this_dir = os.path.abspath(os.path.dirname(__file__))          # .../charaka_vaidya/api
+_package_dir = os.path.dirname(_this_dir)                       # .../charaka_vaidya
+_parent_dir = os.path.dirname(_package_dir)                     # .../Charak_Samhita
+if _parent_dir not in sys.path:
+    sys.path.insert(0, _parent_dir)
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from core.config import config
-from api.routes import chat, herbs, dosha, routine, samhita, transcribe
+from charaka_vaidya.core.config import config
+from charaka_vaidya.api.routes import chat, herbs, dosha, routine, samhita, transcribe, report
 
 app = FastAPI(
     title=config.APP_NAME,

@@ -1,7 +1,8 @@
+import re
 from groq import Groq
-from core.config import config
-from core.prompts import SYSTEM_PROMPT
-from utils.logger import get_logger
+from charaka_vaidya.core.config import config
+from charaka_vaidya.core.prompts import SYSTEM_PROMPT
+from charaka_vaidya.utils.logger import get_logger
 
 logger = get_logger(__name__)
 
@@ -20,12 +21,8 @@ def get_client() -> Groq:
 def _fix_mangled_tables(text: str) -> str:
     """Fix cases where LLM puts Markdown table rows on one line."""
     if not text: return text
-    # Look for patterns like "| Col 1 | Col 2 | |---|---| | Row 1 |" and add newlines
-    # First, handle the header separator: |---|---| |
     text = re.sub(r'(\|\s*:?-+:?\s*\|)\s*(\|)', r'\1\n\2', text)
-    # Then, handle rows: | Value | | Value |
     text = re.sub(r'(\|\s*)\s*(\|)', r'\1\n\2', text)
-    # Clean up any triple newlines created
     text = re.sub(r'\n{3,}', '\n\n', text)
     return text
 
@@ -40,6 +37,14 @@ def generate_response(
     client  = get_client()
     history = chat_history or []
 
+    # Build language directive if a specific language is requested
+    lang_directive = ""
+    if response_language and response_language.lower() != "english":
+        lang_directive = f"\n\nIMPORTANT: Respond entirely in {response_language}."
+
+    # Detect multi-topic queries
+    is_multi = len(user_query.split("?")) > 2 or len(user_query.split(" and ")) > 2
+
     user_message = f"""RETRIEVED CONTEXT FROM CHARAKA SAMHITA:
 {context}
 
@@ -52,7 +57,7 @@ Layer 2 — Translate into plain, accessible language
 Layer 3 — What does modern science add?
 Layer 4 — Practical, actionable guidance{lang_directive}"""
 
-    messages = [{"role": "system", "content": system_prompt}]
+    messages = [{"role": "system", "content": SYSTEM_PROMPT}]
     for msg in history[-6:]:
         messages.append({"role": msg["role"], "content": msg["content"]})
     messages.append({"role": "user", "content": user_message})
@@ -81,4 +86,5 @@ def stream_response(user_query: str, context: str, chat_history: list = None, in
         delta = chunk.choices[0].delta.content
         if delta:
             yield delta
+
 
